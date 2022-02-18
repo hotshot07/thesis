@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pcap-service-deployment
+  labels:
+    app: pcap-app 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pcap-app 
+  template:
+    metadata:
+      labels:
+        app: pcap-app 
+    spec:
+      containers:
+      - name: pcap-app
+        image: hotshot07/pcap-service:latest
+        imagePullPolicy: Always
+        command: ["/bin/sh","-c"]
+        args: ["cd service;python3 basic-server.py & python3 process-pcap.py"]
+        ports:
+        - containerPort: 5000
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: pcap-internal-service
+spec:
+  type: ClusterIP
+  selector:
+    app: pcap-app 
+  ports:
+  # Default port used by the image
+  - port: 5000
