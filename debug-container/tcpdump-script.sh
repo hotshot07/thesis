@@ -1,4 +1,5 @@
-trap "kill" SIGINT
+trap "exit" INT TERM
+trap "kill 0" EXIT
 
 while :
 do

@@ -1,10 +1,9 @@
 import time
-import sys
 import os
 import queue
 import requests
 
-jobs = queue.Queue(maxsize=100)
+jobs = queue.Queue(maxsize=1000)
 
 env_dict = os.environ
 

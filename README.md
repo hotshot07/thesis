@@ -1,2 +1,2 @@
-# thesis
-thesis repo
+# thesis project repo
+

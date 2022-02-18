@@ -1,3 +1,4 @@
-trap 'kill 0' SIGINT
+trap "exit" INT TERM
+trap "kill 0" EXIT
 
-python3 polling.py and bash tcpdump-script.sh
+python3 polling.py & bash tcpdump-script.sh
