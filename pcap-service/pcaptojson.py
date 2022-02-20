@@ -82,6 +82,6 @@ def convert_pcap_to_json(path):
         
 
 if __name__ == '__main__':
-    convert_pcap_to_json('../data/pcaps/wordpress1.pcap')
+    convert_pcap_to_json('../data/pcaps/nmaptest1.pcap')
     
 #{'TCP', 'ARP', 'UDP', 'Raw', 'IPerror', 'UDPerror', 'ICMP', 'Ether', 'IP', 'DNS'}
