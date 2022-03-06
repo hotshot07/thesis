@@ -57,10 +57,13 @@ class Packet():
             if layer_name == 'Raw':
                 self.packet_dict['load.count'] = len(packet_layer.fields.get('load'))
                 self.packet_dict['load'] = packet_layer.fields.get('load')[:8].hex(' ')
+                print(packet_layer.fields.get('load'))
             if layer_name == 'UDP':
                 self.packet_dict['protocol'] = 'UDP'
                 self.packet_dict['protocol.sport'] = packet_layer.fields.get('sport')
                 self.packet_dict['protocol.dport'] = packet_layer.fields.get('dport')
+            
+            print(self.packet_dict)
         
     def return_dict(self):
         return self.packet_dict
@@ -74,11 +77,12 @@ def convert_pcap_to_json(path):
     for packet_var in pcap:
         pcap_dictionary.append(Packet(packet_var).return_dict())
         
-    head, tail = os.path.split(path)
+        
+    # head, tail = os.path.split(path)
     
         
-    with open(PCAP_JSON_PATH + f"pcap-{tail.split('.')[0]}.json", 'w') as fp:
-        json.dump(pcap_dictionary, fp, sort_keys= True, indent= 4)
+    # with open(PCAP_JSON_PATH + f"pcap-{tail.split('.')[0]}.json", 'w') as fp:
+    #     json.dump(pcap_dictionary, fp, sort_keys= True, indent= 4)
         
 
 if __name__ == '__main__':
