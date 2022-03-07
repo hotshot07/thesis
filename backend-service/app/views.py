@@ -22,15 +22,17 @@ cursor = cnx.cursor(dictionary=True)
 
 @app.route("/")
 def index():
-    queries = """ 
+    latest_query = """ 
     SELECT *
     FROM pcap_data4
-    where score = 2
-    limit 20
+    order by score desc
+    limit 100
     """
     
-    cursor.execute(queries)
-    
+    cursor.execute(latest_query)
     myresult = cursor.fetchall()
     
-    return render_template("index.html", table_data = myresult)
+    cursor.execute("SELECT count(*) FROM pcap_data4")
+    analysed_packets = cursor.fetchall()[0]['count(*)']
+    
+    return render_template("index.html", table_data = myresult, analysed_packets = analysed_packets)
