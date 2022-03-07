@@ -1,9 +1,8 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS, cross_origin
+from app import app
+from flask import url_for,render_template
 import mysql.connector
-import json
 
-app = Flask(__name__)
+from flask_cors import CORS
 CORS(app, resources={r'/*': {'origins': '*'}})
 
 app.config['CORS_HEADERS'] = 'Content-Type'
@@ -21,27 +20,17 @@ db_config = {
 cnx = mysql.connector.connect(**db_config)
 cursor = cnx.cursor(dictionary=True)
 
-@app.route('/', methods=['GET'])
+@app.route("/")
 def index():
-  queries = """ 
-  SELECT *
-  FROM pcap_data4
-  where score = 2
-  limit 5
-  """
-  
-  cursor.execute(queries)
-  
-  myresult = cursor.fetchall()
-  
-  return jsonify(myresult)
-
-if __name__ == '__main__':
-  app.run(debug=True)
-  
-
-
-
-
-
-cnx.close()
+    queries = """ 
+    SELECT *
+    FROM pcap_data4
+    where score = 2
+    limit 20
+    """
+    
+    cursor.execute(queries)
+    
+    myresult = cursor.fetchall()
+    
+    return render_template("index.html", table_data = myresult)
