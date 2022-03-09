@@ -2,8 +2,7 @@ import logging
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 from scapy.all import *
 import json 
-import os 
-from pprint import pprint
+import os
 import csv 
 
 PCAP_CSV_PATH = './processed-files/'
@@ -25,8 +24,8 @@ class Packet():
         self.extract_data() 
     
     def extract_data(self):
-        self.packet_dict['length'] = len(self.packet)
         self.packet_dict['timestamp'] = float(self.packet.time)
+        self.packet_dict['length'] = len(self.packet)
         
         for layer in self.packet.layers():
             packet_layer = self.packet[layer.__name__]
@@ -77,7 +76,7 @@ def convert_pcap_to_csv(path):
         
     head, tail = os.path.split(path)
     
-    csv_path = PCAP_CSV_PATH+ f"pcap-{tail.split('.')[0]}.csv"
+    csv_path = PCAP_CSV_PATH+ f"{tail.split('.')[0]}.csv"
 
     with open(csv_path, 'w', newline='') as csv_data_file:
         csv_writer = csv.writer(csv_data_file)
@@ -86,8 +85,4 @@ def convert_pcap_to_csv(path):
         for data_row in pcap_dictionary:
             csv_writer.writerow(data_row.values())
     
-    return csv_path 
- 
-       
-# if __name__ == '__main__':
-#     convert_pcap_to_csv('/Users/hotshot07/Desktop/thesis/data/pcaps/wordpress1.pcap')
+    return csv_path

@@ -19,7 +19,7 @@ spec:
         image: hotshot07/pcap-service:latest
         imagePullPolicy: Always
         command: ["/bin/sh","-c"]
-        args: ["cd service;python3 basic-server.py & python3 process-pcap.py"]
+        args: ["python3 pcap_server.py & python3 process_pcap.py"]
         ports:
         - containerPort: 5000
 
