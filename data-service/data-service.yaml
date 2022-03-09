@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: data-pcap 
-        image: hotshot07/pcap-service:latest
+        image: hotshot07/data-service:latest
         imagePullPolicy: Always
         command: ["/bin/sh","-c"]
         args: ["python3 data_server.py"]
