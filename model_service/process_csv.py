@@ -4,18 +4,21 @@ import numpy as np
 from sklearn import metrics
 from sklearn.preprocessing import StandardScaler
 import keras
+import os
 
-
-
-loaded_model = keras.models.load_model("autoencoder_model")
+loaded_model = keras.models.load_model("/Users/hotshot07/Desktop/thesis/model_service/autoencoder_model")
 hex_lambda = lambda x: int(x,16)
 
 def process_df(unprocessed_df):
     
+    #fills the None data values with 0
     
-    unprocessed_df['load'].fillna(0.0, inplace = True)
-    unprocessed_df['load.count'].fillna([0]*8, inplace = True)
+    unprocessed_df['load'].fillna(0, inplace = True)
+    unprocessed_df['load.count'].fillna(0, inplace = True)
+    
+    
 
+    #creates final_df and starts updating the final_df
     eth_dst_list = list(unprocessed_df['eth.dst'])
 
     octet_1_dst = []
@@ -76,7 +79,7 @@ def process_df(unprocessed_df):
     octet_4_src = []
 
     for eth in ip_src_list:
-        int_ip_list = list(eth.split('.'))
+        int_ip_list = eth.split('.')
         octet_1_src.append(int_ip_list[0])
         octet_2_src.append(int_ip_list[1])
         octet_3_src.append(int_ip_list[2])
@@ -96,7 +99,7 @@ def process_df(unprocessed_df):
     octet_4_dst = []
 
     for eth in ip_dst_list:
-        int_ip_list = list(eth.split('.'))
+        int_ip_list = eth.split('.')
         octet_1_dst.append(int_ip_list[0])
         octet_2_dst.append(int_ip_list[1])
         octet_3_dst.append(int_ip_list[2])
@@ -107,6 +110,7 @@ def process_df(unprocessed_df):
     final_df['octet_3_ip_dst'] = octet_3_dst
     final_df['octet_4_ip_dst'] = octet_4_dst
     
+    ## copying useful columns
     final_df['ip.len'] = list(unprocessed_df['ip.len'])
     final_df['ip.tos'] = list(unprocessed_df['ip.tos'])
     final_df['ip.ttl'] = list(unprocessed_df['ip.ttl'])
@@ -122,7 +126,7 @@ def process_df(unprocessed_df):
     
     final_df = final_df.astype('float64')
 
-    #columns to preprocess (exclude categorial columns like tcp, udp and attack)
+    #columns to preprocess (exclude categorial columns like tcp, udp, etc)
     num_cols = ['octet_1_eth_dst', 'octet_2_eth_dst', 'octet_3_eth_dst',
         'octet_4_eth_dst', 'octet_5_eth_dst', 'octet_6_eth_dst',
         'octet_1_eth_src', 'octet_2_eth_src', 'octet_3_eth_src',
@@ -137,37 +141,32 @@ def process_df(unprocessed_df):
         
     
     data_vector = final_df.values
-    pred = model.predict(data_vector)
+    pred = loaded_model.predict(data_vector)
+    
+    return data_vector,pred 
+
+def process_and_run_prediction(path_to_csv):
+    unprocessed_df = pd.read_csv(path_to_csv)
+    
+    data_vector, predicted_vector = process_df(unprocessed_df)
+
+    uuid_list = [uuid4().hex for i in range((unprocessed_df.shape[0]))]
+    
+    unprocessed_df.insert(0, 'uuid', uuid_list)
     
     score_list = []
-    for index, x in enumerate(pred):
-        score_list.append(np.sqrt(metrics.mean_squared_error(pred[index],data_vector[index])))
+    for index, x in enumerate(predicted_vector):
+        score_list.append(np.sqrt(metrics.mean_squared_error(predicted_vector[index],data_vector[index])))
+        
+    unprocessed_df["score"] = score_list
     
-    return pred
-    
-    #returns model_predict values
-
-process_and_run_prediction(path_to_csv):
-    unprocessed_csv = pd.read_csv(path_to_csv)
-    
-    predicted_vector = process_df(unprocessed_csv)
-
-    uuid_list = [uuid4().hex for i in range(len(unprocessed_csv.shape[0]))]
-    
-    unprocessed_csv.insert(0, 'uuid', uuid_list)
-    
-    score_list = []
-    for index, x in enumerate(pred):
-        score_list.append(np.sqrt(metrics.mean_squared_error(pred[index],x_normal[index])))
-    unprocessed_csv["score"] = score_list
-    
-    for col in unprocessed_csv.columns:
-        if col not in ['timestamp','score']
-            unprocessed_csv[col] = unprocessed_csv[col].apply(str)
+    for col in unprocessed_df.columns:
+        if col not in ['timestamp','score']:
+            unprocessed_df[col] = unprocessed_df[col].apply(str)
     
     head, tail = os.path.split(path_to_csv)
     processed_path = f'./processed_csvs/processed_{tail}'
-    unprocessed_csv.to_csv(processed_path,index = False, header = False, quoting=2)
+    unprocessed_df.to_csv(processed_path,index = False, header = False, quoting=2)
 
     return processed_path
 
@@ -194,4 +193,4 @@ def check_if_ip_is_internal_or_external(ip):
     
     
 if __name__ == '__main__':
-    process_and_run_prediction()
+    process_and_run_prediction('/Users/hotshot07/Desktop/thesis/model_service/received-csv-files/wordpress1.csv')

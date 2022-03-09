@@ -71,7 +71,9 @@ def convert_pcap_to_csv(path):
     pcap_dictionary = []
 
     for packet_var in pcap:
-        pcap_dictionary.append(Packet(packet_var).return_dict())
+        processed_packet = Packet(packet_var).return_dict()
+        if processed_packet.get('protocol') is not None:
+            pcap_dictionary.append(processed_packet)
     
         
     head, tail = os.path.split(path)
