@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-deployment
+  labels:
+    app: ml-model
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ml-model  
+  template:
+    metadata:
+      labels:
+        app: ml-model  
+    spec:
+      containers:
+      - name: ml-model 
+        image: hotshot07/model-service:amd
+        imagePullPolicy: Always
+        command: ["/bin/sh","-c"]
+        args: ["python3 model_server.py & python3 model_script.py"]
+        ports:
+        - containerPort: 5000
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: model-service
+spec:
+  type: ClusterIP
+  selector:
+    app: ml-model 
+  ports:
+  # Default port used by the image
+  - port: 5000

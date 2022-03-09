@@ -64,8 +64,6 @@ if __name__ == '__main__':
                     os.remove(pcap_path)
                 else:
                     jobs.put(pcap_path)
-                
-                
     except KeyboardInterrupt:
         print("\nQuitting the program.")
     except Exception as e:

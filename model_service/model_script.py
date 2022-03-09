@@ -25,7 +25,7 @@ def check_new_files(path):
 if __name__ == '__main__':
     try:
         while True:
-            new_files = check_new_files('./received-csv-files/')
+            new_files = check_new_files('./received_csv_files/')
 
             if len(new_files)!=0:
                 for file in sorted(new_files):

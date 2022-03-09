@@ -6,7 +6,7 @@ from sklearn.preprocessing import StandardScaler
 import keras
 import os
 
-loaded_model = keras.models.load_model("/Users/hotshot07/Desktop/thesis/model_service/autoencoder_model")
+loaded_model = keras.models.load_model("./autoencoder_model")
 hex_lambda = lambda x: int(x,16)
 
 column_order = ['uuid', 'timestamp', 'eth.src','eth.dst','eth.type', 'length', 'ip.src','ip.dst','ip.version',

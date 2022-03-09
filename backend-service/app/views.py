@@ -11,7 +11,7 @@ db_config = {
   'user': 'root',
   'password': 'password',
   'host': 'localhost',
-  'port': '51280',
+  'port': '50668',
   'database': 'pcap',
   'allow_local_infile':True,
   'raise_on_warnings': True
@@ -24,7 +24,7 @@ cursor = cnx.cursor(dictionary=True)
 def index():
     latest_query = """ 
     SELECT *
-    FROM pcap_data4
+    FROM pcap_table
     order by score desc
     limit 100
     """
@@ -32,7 +32,7 @@ def index():
     cursor.execute(latest_query)
     myresult = cursor.fetchall()
     
-    cursor.execute("SELECT count(*) FROM pcap_data4")
+    cursor.execute("SELECT count(*) FROM pcap_table")
     analysed_packets = cursor.fetchall()[0]['count(*)']
     
     return render_template("index.html", table_data = myresult, analysed_packets = analysed_packets)
