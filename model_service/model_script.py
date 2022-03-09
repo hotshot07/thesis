@@ -3,7 +3,7 @@ import time
 import os
 import queue
 from process_csv import process_and_run_prediction
-# from send_to_db import update_mysql_database
+from send_to_db import update_mysql_database
 
 jobs = queue.Queue(maxsize=1000)
 
@@ -35,19 +35,18 @@ if __name__ == '__main__':
                     
             time.sleep(2)
             if not jobs.empty():
-                path = jobs.get()
+                unprocessed_path = jobs.get()
                 
-                predicted_csv_file_path = process_and_run_prediction(path)
+                predicted_csv_file_path = process_and_run_prediction(unprocessed_path)
                 
                 #send to mysql database
-                # try:
-                #     update_mysql_database(predicted_csv_file_path)
-                # except Exception as e:
-                #     jobs.put(path)
-                
-                
-                
-                
+                try:
+                    update_mysql_database(predicted_csv_file_path)
+                    os.remove(predicted_csv_file_path)
+                except Exception as e:
+                    print(e)
+                    jobs.put(unprocessed_path)
+                         
     except KeyboardInterrupt:
         print("\nQuitting the program.")
     except Exception as e:

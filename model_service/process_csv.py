@@ -9,6 +9,10 @@ import os
 loaded_model = keras.models.load_model("/Users/hotshot07/Desktop/thesis/model_service/autoencoder_model")
 hex_lambda = lambda x: int(x,16)
 
+column_order = ['uuid', 'timestamp', 'eth.src','eth.dst','eth.type', 'length', 'ip.src','ip.dst','ip.version',
+                    'ip.proto','ip.len','ip.ihl','ip.tos','ip.flags','ip.ttl','load', 'load.count', 'protocol', 
+                    'protocol.sport', 'protocol.dport', 'score']
+
 def process_df(unprocessed_df):
     
     #fills the None data values with 0
@@ -17,7 +21,6 @@ def process_df(unprocessed_df):
     unprocessed_df['load.count'].fillna(0, inplace = True)
     
     
-
     #creates final_df and starts updating the final_df
     eth_dst_list = list(unprocessed_df['eth.dst'])
 
@@ -166,6 +169,9 @@ def process_and_run_prediction(path_to_csv):
     
     head, tail = os.path.split(path_to_csv)
     processed_path = f'./processed_csvs/processed_{tail}'
+    
+    unprocessed_df = unprocessed_df[column_order]
+    
     unprocessed_df.to_csv(processed_path,index = False, header = False, quoting=2)
 
     return processed_path
@@ -189,8 +195,4 @@ def check_if_ip_is_internal_or_external(ip):
         return 'pod'
     
     else:
-        return 'external' 
-    
-    
-if __name__ == '__main__':
-    process_and_run_prediction('/Users/hotshot07/Desktop/thesis/model_service/received-csv-files/wordpress1.csv')
+        return 'external'
