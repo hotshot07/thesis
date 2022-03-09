@@ -4,13 +4,14 @@ from scapy.all import *
 import json 
 import os 
 from pprint import pprint
+import csv 
 
-PCAP_JSON_PATH = '../data/json-data/'
+PCAP_CSV_PATH = '../data/csv-data/'
 
 
 class Packet():
     packet = None
-    general_headers = ['length']
+    general_headers = ['length','time']
     eth_headers = ['eth.src','eth.dst','eth.type']
     ip_headers = ['ip.src', 'ip.dst', 'ip.version','ip.proto','ip.len', 'ip.ihl', 'ip.tos', 'ip.flags', 'ip.ttl']
     tcp_headers = ['tcp.sport', 'tcp.dport' ,'tcp.reserved' ,'tcp.flags', 'tcp.urgptr']
@@ -25,6 +26,7 @@ class Packet():
     
     def extract_data(self):
         self.packet_dict['length'] = len(self.packet)
+        self.packet_dict['timestamp'] = float(self.packet.time)
         
         for layer in self.packet.layers():
             packet_layer = self.packet[layer.__name__]
@@ -62,8 +64,7 @@ class Packet():
                 self.packet_dict['protocol'] = 'UDP'
                 self.packet_dict['protocol.sport'] = packet_layer.fields.get('sport')
                 self.packet_dict['protocol.dport'] = packet_layer.fields.get('dport')
-            
-            print(self.packet_dict)
+
         
     def return_dict(self):
         return self.packet_dict
@@ -76,12 +77,12 @@ def convert_pcap_to_json(path):
 
     for packet_var in pcap:
         pcap_dictionary.append(Packet(packet_var).return_dict())
-        
-        
-    # head, tail = os.path.split(path)
     
         
-    # with open(PCAP_JSON_PATH + f"pcap-{tail.split('.')[0]}.json", 'w') as fp:
+    head, tail = os.path.split(path)
+    
+        
+    with open(PCAP_CSV_PATH + f"pcap-{tail.split('.')[0]}.json", 'w') as fp:
     #     json.dump(pcap_dictionary, fp, sort_keys= True, indent= 4)
         
 
