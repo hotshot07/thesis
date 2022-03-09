@@ -3,7 +3,7 @@ import time
 import os
 import queue
 from process_csv import process_and_run_prediction
-
+from send_to_db import update_mysql_database
 jobs = queue.Queue(maxsize=100)
 
 set_of_files = set()
@@ -34,9 +34,13 @@ try:
         time.sleep(5)
         if not jobs.empty():
             path = jobs.get()
-            predicted_csv_file = process_and_run_prediction(path)
+            predicted_csv_file_path = process_and_run_prediction(path)
             
-            #send to mysql database 
+            #send to mysql database
+            try:
+                update_mysql_database(predicted_csv_file_path)
+            except Exception as e:
+                jobs.put(path)
             
             
             

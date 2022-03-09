@@ -147,17 +147,6 @@ def process_df(unprocessed_df):
     
     #returns model_predict values
 
-
-
-
-
-
-
-
-
-
-
-
 process_and_run_prediction(path_to_csv):
     unprocessed_csv = pd.read_csv(path_to_csv)
     

@@ -1,10 +1,12 @@
 import time
 import os
 import queue
-from pcaptojson import convert_pcap_to_json
+from pcap_to_csv import convert_pcap_to_csv
 
-jobs = queue.Queue(maxsize=100)
+SERVICE = 'model-service'
+PORT = '5000'
 
+jobs = queue.Queue(maxsize=1000)
 set_of_files = set()
 
 def check_new_files(path):
@@ -18,7 +20,16 @@ def check_new_files(path):
             set_of_files.add(filename)
 
     return list_of_new_files
-    
+
+
+def send_file(path):
+    with open(path, "rb") as file:
+        file_dict = {'uploaded_file': file}
+        try :
+            response = requests.post(f"http://{SERVICE}:{PORT}/file", files=file_dict)
+            return response.status_code
+        except Exception as e:
+            print(e) 
 
 try:
     while True:
@@ -33,8 +44,15 @@ try:
         time.sleep(5)
         if not jobs.empty():
             path = jobs.get()
-            print(path)
-            convert_pcap_to_json(path)
+            
+            #receive path of csv file 
+            converted_csv_path =  convert_pcap_to_csv(path)
+            
+            if str(status_code) == '200':
+                os.remove(path)
+            else:
+                jobs.put(path)
+            
             
 except KeyboardInterrupt:
     print("\nQuitting the program.")

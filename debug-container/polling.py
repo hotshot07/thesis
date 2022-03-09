@@ -51,6 +51,7 @@ try:
                 os.remove(path)
             else:
                 jobs.put(path)
+                
 except KeyboardInterrupt:
     print("\nQuitting the program.")
 except Exception as e:
