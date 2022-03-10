@@ -35,5 +35,6 @@ def index():
     cursor.execute("SELECT count(*) FROM pcap_table")
     analysed_packets = cursor.fetchall()[0]['count(*)']
     
+    
     return render_template("index.html", table_data = myresult, analysed_packets = analysed_packets)
 

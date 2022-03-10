@@ -24,8 +24,6 @@ def update_mysql_database(path_to_processed_csv):
                     LINES TERMINATED BY '\n'
                 """
                 )
-
-  print(csv_import)
   
   cursor.execute(csv_import)
   cnx.commit()

@@ -30,7 +30,7 @@ def send_file(path, service, port):
     with open(path, "rb") as file:
         file_dict = {'uploaded_file': file}
         try :
-            response = requests.post(f"http://{service}:{port}/file", files=file_dict)
+            response = requests.post(f"{service}:{port}/file", files=file_dict)
             return response.status_code
         except Exception as e:
             print(e) 
@@ -55,7 +55,7 @@ if __name__ == '__main__':
                 data_service_status_code = send_file(pcap_path, DATA_SERVICE, DATA_PORT)
                 
                 #send converted 
-                converted_csv_path =  convert_pcap_to_csv(pcap_path)
+                converted_csv_path = convert_pcap_to_csv(pcap_path)
                 
                 #send file to model-service for processing
                 model_service_status_code = send_file(pcap_path, MODEL_SERVICE,MODEL_PORT)
@@ -64,6 +64,7 @@ if __name__ == '__main__':
                     os.remove(pcap_path)
                 else:
                     jobs.put(pcap_path)
+                    
     except KeyboardInterrupt:
         print("\nQuitting the program.")
     except Exception as e:

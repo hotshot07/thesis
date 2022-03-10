@@ -54,7 +54,7 @@ class Packet():
                 
             if layer_name == 'Raw':
                 self.packet_dict['load.count'] = len(packet_layer.fields.get('load'))
-                self.packet_dict['load'] = packet_layer.fields.get('load')[:8].hex(' ')
+                self.packet_dict['load'] = packet_layer.fields.get('load')[:8].hex()
             if layer_name == 'UDP':
                 self.packet_dict['protocol'] = 'UDP'
                 self.packet_dict['protocol.sport'] = packet_layer.fields.get('sport')
@@ -88,3 +88,7 @@ def convert_pcap_to_csv(path):
             csv_writer.writerow(data_row.values())
     
     return csv_path
+
+
+if __name__ == '__main__':
+    convert_pcap_to_csv('/Users/hotshot07/Desktop/thesis/data/pcaps/wordpress1.pcap')

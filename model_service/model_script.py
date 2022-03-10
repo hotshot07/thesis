@@ -22,35 +22,36 @@ def check_new_files(path):
     return list_of_new_files
     
 
-if __name__ == '__main__':
-    try:
-        while True:
-            new_files = check_new_files('./received_csv_files/')
+try:
+    while True:
+        new_files = check_new_files('./received_csv_files/')
 
-            if len(new_files)!=0:
-                for file in sorted(new_files):
-                    if str(file).endswith('.csv'):
-                        jobs.put(file)
-                        print(f"{file} is in queue")
+        if len(new_files)!=0:
+            for file in sorted(new_files):
+                if str(file).endswith('.csv'):
+                    jobs.put(file)
+                    print(f"{file} is in queue")
                     
-            time.sleep(2)
-            if not jobs.empty():
-                unprocessed_path = jobs.get()
-                
-                predicted_csv_file_path = process_and_run_prediction(unprocessed_path)
-                
-                #send to mysql database
-                try:
-                    update_mysql_database(predicted_csv_file_path)
-                    os.remove(predicted_csv_file_path)
-                except Exception as e:
-                    print(e)
-                    jobs.put(unprocessed_path)
+        time.sleep(2)
+        if not jobs.empty():
+            unprocessed_path = jobs.get()
+            
+            print(f"{unprocessed_path} is being processed")
+            predicted_csv_file_path = process_and_run_prediction(unprocessed_path)
+            
+            print(f"{predicted_csv_file_path} is being sent to database")
+            
+            #send to mysql database
+            try:
+                update_mysql_database(predicted_csv_file_path)
+                os.remove(predicted_csv_file_path)
+            except Exception as e:
+                print(e)
                          
-    except KeyboardInterrupt:
-        print("\nQuitting the program.")
-    except Exception as e:
-        print(e)
+except KeyboardInterrupt:
+    print("\nQuitting the program.")
+except Exception as e:
+    print(e)
 
 
     

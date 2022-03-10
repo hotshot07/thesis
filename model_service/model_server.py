@@ -2,7 +2,7 @@ import os
 from flask import Flask, request
 from werkzeug.utils import secure_filename
 
-FILE_FOLDER = './received-csv-files'
+FILE_FOLDER = './received_csv_files'
 
 app = Flask(__name__)
 app.config['FILE_FOLDER'] = FILE_FOLDER
