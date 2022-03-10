@@ -16,6 +16,8 @@ def update_mysql_database(path_to_processed_csv):
 
   cursor = cnx.cursor()
   
+  print(f"Connected to MySQL database, sending {path_to_processed_csv}")
+  
   csv_import = ( f"""LOAD DATA LOCAL INFILE '{path_to_processed_csv}'
                   INTO TABLE pcap_table
                   FIELDS 

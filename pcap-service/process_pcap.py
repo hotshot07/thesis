@@ -52,16 +52,21 @@ try:
                 
             #send file to data-service to collect all csv's
             data_service_status_code = send_file(pcap_path, DATA_SERVICE, DATA_PORT)
-                
+            
+            if str(data_service_status_code) == '200':
+               print(f"{pcap_path} sent to data service successfully")
+            
             #send converted 
             converted_csv_path = convert_pcap_to_csv(pcap_path)
                 
             #send file to model-service for processing
             model_service_status_code = send_file(pcap_path, MODEL_SERVICE,MODEL_PORT)
                 
-            if model_service_status_code == '200':
+            if str(model_service_status_code) == '200':
+                print(f"{converted_csv_path} sent to model service successfully")
                 os.remove(pcap_path)
             else:
+                print(f"Error in sending {converted_csv_path} to model service")
                 jobs.put(pcap_path)
                     
 except KeyboardInterrupt:

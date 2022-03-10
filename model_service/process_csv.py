@@ -146,14 +146,16 @@ def process_df(unprocessed_df):
     data_vector = final_df.values
     pred = loaded_model.predict(data_vector)
     
+    print("Predictions done")
     return data_vector,pred 
 
 def process_and_run_prediction(path_to_csv):
+    print("Processing and running prediction")
     unprocessed_df = pd.read_csv(path_to_csv)
     
     data_vector, predicted_vector = process_df(unprocessed_df)
 
-    uuid_list = [uuid4().hex for i in range((unprocessed_df.shape[0]))]
+    uuid_list = [uuid4().hex for _ in range((unprocessed_df.shape[0]))]
     
     unprocessed_df.insert(0, 'uuid', uuid_list)
     
