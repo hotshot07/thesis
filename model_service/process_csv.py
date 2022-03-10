@@ -5,6 +5,8 @@ from sklearn import metrics
 from sklearn.preprocessing import StandardScaler
 import keras
 import os
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 loaded_model = keras.models.load_model("./autoencoder_model")
 hex_lambda = lambda x: int(x,16)
@@ -146,11 +148,12 @@ def process_df(unprocessed_df):
     data_vector = final_df.values
     pred = loaded_model.predict(data_vector)
     
-    print("Predictions done")
+    logging.debug("Predictions done")
     return data_vector,pred 
 
 def process_and_run_prediction(path_to_csv):
-    print("Processing and running prediction")
+    logging.debug("Processing and running prediction for f{path_to_csv}")
+    
     unprocessed_df = pd.read_csv(path_to_csv)
     
     data_vector, predicted_vector = process_df(unprocessed_df)

@@ -2,8 +2,12 @@
 import time
 import os
 import queue
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
 from process_csv import process_and_run_prediction
 from send_to_db import update_mysql_database
+
 
 jobs = queue.Queue(maxsize=1000)
 
@@ -30,28 +34,28 @@ try:
             for file in sorted(new_files):
                 if str(file).endswith('.csv'):
                     jobs.put(file)
-                    print(f"{file} is in queue")
+                    logging.debug(f"{file} is in queue")
                     
         time.sleep(2)
         if not jobs.empty():
             unprocessed_path = jobs.get()
             
-            print(f"{unprocessed_path} is being processed")
+            logging.debug(f"{unprocessed_path} is being processed")
             predicted_csv_file_path = process_and_run_prediction(unprocessed_path)
             
-            print(f"{predicted_csv_file_path} is being sent to database")
+            logging.debug(f"{predicted_csv_file_path} is being sent to database")
             
             #send to mysql database
             try:
                 update_mysql_database(predicted_csv_file_path)
                 os.remove(predicted_csv_file_path)
             except Exception as e:
-                print(e)
+                logging.error(e)
                          
 except KeyboardInterrupt:
-    print("\nQuitting the program.")
+    logging.debug("\nQuitting the program.")
 except Exception as e:
-    print(e)
+    logging.error(e)
 
 
     

@@ -3,6 +3,9 @@ import os
 import queue
 import requests 
 from pcap_to_csv import convert_pcap_to_csv
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 MODEL_SERVICE = 'model-service'
 MODEL_PORT = '5000'
@@ -44,7 +47,7 @@ try:
             for file in sorted(new_files):
                 if str(file).endswith('.pcap'):
                     jobs.put(file)
-                    print(f"{file} is in queue")
+                    logging.debug(f"{file} is in queue")
                     
         time.sleep(2)
         if not jobs.empty():
@@ -54,25 +57,25 @@ try:
             data_service_status_code = send_file(pcap_path, DATA_SERVICE, DATA_PORT)
             
             if str(data_service_status_code) == '200':
-               print(f"{pcap_path} sent to data service successfully")
+               logging.debug(f"{pcap_path} sent to data service successfully")
             
             #send converted 
             converted_csv_path = convert_pcap_to_csv(pcap_path)
                 
             #send file to model-service for processing
-            model_service_status_code = send_file(pcap_path, MODEL_SERVICE,MODEL_PORT)
+            model_service_status_code = send_file(converted_csv_path, MODEL_SERVICE, MODEL_PORT)
                 
             if str(model_service_status_code) == '200':
-                print(f"{converted_csv_path} sent to model service successfully")
+                logging.debug(f"{converted_csv_path} sent to model service successfully")
                 os.remove(pcap_path)
             else:
-                print(f"Error in sending {converted_csv_path} to model service")
+                logging.debug(f"Error in sending {converted_csv_path} to model service")
                 jobs.put(pcap_path)
                     
 except KeyboardInterrupt:
-    print("\nQuitting the program.")
+    logging.debug("\nQuitting the program.")
 except Exception as e:
-    print(e)
+    logging.error(e)
 
 
     
