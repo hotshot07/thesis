@@ -1,0 +1,9 @@
+model = Sequential()
+model.add(Dense(25, input_dim=svd_normal.shape[1], activation='relu'))
+model.add(Dense(10, input_dim=svd_normal.shape[1], activation='relu'))
+model.add(Dense(3, activation='relu')) # size to compress to
+model.add(Dense(20, activation='relu'))
+model.add(Dense(25, activation='relu'))
+model.add(Dense(svd_normal.shape[1])) # Multiple output neurons
+
+seems okay, idk
