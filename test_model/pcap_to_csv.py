@@ -144,4 +144,4 @@ def convert_pcap_to_csv(path):
 
 
 if __name__ == '__main__':
-    convert_pcap_to_csv('/Users/hotshot07/Desktop/test_model/testing.pcap')
+    convert_pcap_to_csv('attack1.pcap')
