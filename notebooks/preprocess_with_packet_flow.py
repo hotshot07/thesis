@@ -1,7 +1,7 @@
 import pandas as pd 
 import numpy as np
 from sklearn.preprocessing import Normalizer
-
+from datetime import datetime
 
 hex_lambda = lambda x: int(x,16)
 
@@ -125,7 +125,26 @@ def process_df(unprocessed_df):
            'destination_service', 'destination_pod', 'destination_external', 'TCP',
            'UDP']
     
+    time_df = pd.DataFrame(unprocessed_df['timestamp'])
+    
+    time_df['packet'] = 1
+    time_df['timestamp'] = time_df['timestamp'].apply(lambda x: datetime.fromtimestamp(x))
+    time_df = time_df.set_index('timestamp')
+    
+    time_df = time_df.resample('10s').sum()
+    
+    packet_flow_list = []
+    
+    for x in list(time_df['packet']):
+        packet_flow_list += [x]*x 
+    
+    final_df['packet_flow'] = packet_flow_list
+    
+    
     final_df = final_df.astype('float64')
+    
+    
+    #Normailizing the data
     
     for col in final_df:
         if col not in columns_not_to_scale:
@@ -134,5 +153,5 @@ def process_df(unprocessed_df):
             mini = float(final_df[col].min())
             sub = maxi - mini
             final_df[col] = final_df[col].apply(lambda x: (float(x) - mini)/sub)
-    
+            
     return final_df 
