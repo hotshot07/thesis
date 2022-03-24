@@ -10,28 +10,28 @@ class Packet():
     packet = None
     
     general_headers = ['length','timestamp']
-    eth_headers = ['eth.src','eth.dst','eth.type']
+    #eth_headers = ['eth.src','eth.dst','eth.type']
     ip_headers = ['ip.src', 'ip.dst', 'ip.version','ip.proto','ip.len', 'ip.ihl', 'ip.tos', 'ip.ttl']
     raw_headers = ['load.count']
-    flags = ['FIN', 'SYN', 'RST', 'PSH', 'ACK', 'URG', 'ECE', 'CWR', 'UNK']
-    source_ip_type = ['source_docker_bridge', 'source_dns', 'source_service', 'source_pod', 'source_external']
-    destination_ip_type = ['destination_docker_bridge', 'destination_dns', 'destination_service', 'destination_pod', 'destination_external']
-    load_bytes = [f'load_{x}' for x in range(20)]
+    # flags not used in this model
+    #flags = ['FIN', 'SYN', 'RST', 'PSH', 'ACK', 'URG', 'ECE', 'CWR', 'UNK']
+    source_ip_type = ['source_pod', 'source_external']
+    destination_ip_type = ['destination_pod', 'destination_external']
+    #load_bytes = [f'load_{x}' for x in range(20)]
 
-    list_of_headers = general_headers + eth_headers + ip_headers + raw_headers + flags + source_ip_type + destination_ip_type + load_bytes
+    list_of_headers = general_headers  + ip_headers + raw_headers  + source_ip_type + destination_ip_type
     
-    flag_dict = {
-        'F': 'FIN',
-        'S': 'SYN',
-        'R': 'RST',
-        'P': 'PSH',
-        'A': 'ACK',
-        'U': 'URG',
-        'E': 'ECE',
-        'C': 'CWR',
-        '?': 'UNK'
-    }
-    
+    # flag_dict = {
+    #     'F': 'FIN',
+    #     'S': 'SYN',
+    #     'R': 'RST',
+    #     'P': 'PSH',
+    #     'A': 'ACK',
+    #     'U': 'URG',
+    #     'E': 'ECE',
+    #     'C': 'CWR',
+    #     '?': 'UNK'
+    # }
     
     def __init__(self, packet):
         self.packet = packet
