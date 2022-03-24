@@ -21,7 +21,7 @@ class Packet():
     
     def __init__(self, packet):
         self.packet = packet
-        self.packet_dict = {x:None for x in self.list_of_parameters}
+        self.packet_dict = {x:0 for x in self.list_of_parameters}
         self.extract_data() 
     
     def extract_data(self):
@@ -85,7 +85,7 @@ def convert_pcap_to_csv(path):
 
     for packet_var in pcap:
         processed_packet = Packet(packet_var).return_dict()
-        if processed_packet.get('protocol') is not None:
+        if processed_packet.get('protocol') != 0:
             pcap_dictionary.append(processed_packet)
     
         
@@ -103,5 +103,5 @@ def convert_pcap_to_csv(path):
     return csv_path
 
 
-# if __name__ == '__main__':
-#     convert_pcap_to_csv('./received-files/wordpress1.pcap')
+if __name__ == '__main__':
+    convert_pcap_to_csv('./received-files/wordpress1.pcap')
