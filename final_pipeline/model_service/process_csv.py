@@ -13,9 +13,8 @@ loaded_model = keras.models.load_model("./autoencoder_model")
 hex_lambda = lambda x: int(x,16)
 
 # length,timestamp,ip.src,ip.dst,protocol,protocol.sport,protocol.dport,source_internal,source_external,destination_internal,destination_external
-column_order = ['uuid', 'timestamp','length','ip.src','ip.dst','protocol','protocol.sport',
-                'protocol.dport','source_internal','source_external','destination_internal',
-                'destination_external', 'score']
+column_order = ['uuid', 'timestamp','length','ip.src', 'source_internal','source_external','ip.dst', 'destination_internal',
+                'destination_external','protocol','protocol.sport', 'protocol.dport', 'score']
 
 def process_df(unprocessed_df):
     
@@ -97,7 +96,7 @@ def process_df(unprocessed_df):
     final_df = final_df.astype('float64')
     
     
-    #Normailizing the data
+    #Normalizing the data
     # epsilon = 1e-7
     
     for col in final_df.columns:
@@ -105,6 +104,7 @@ def process_df(unprocessed_df):
             scale = StandardScaler().fit(final_df[[col]])
             final_df[col] = scale.transform(final_df[[col]])
         
+    print(final_df.columns)
     
     data_vector = final_df.values
     pred = loaded_model.predict(data_vector)
@@ -146,3 +146,11 @@ def process_and_run_prediction(path_to_csv):
 
 if __name__ == '__main__':
     process_and_run_prediction("./received_csv_files/wordpress1.csv")
+    
+    
+#final_df looks like   
+##['octet_1_ip_src', 'octet_2_ip_src', 'octet_3_ip_src', 'octet_4_ip_src',
+    #    'octet_1_ip_dst', 'octet_2_ip_dst', 'octet_3_ip_dst', 'octet_4_ip_dst',
+    #    'length', 'protocol.sport', 'protocol.dport', 'source_internal',
+    #    'source_external', 'destination_internal', 'destination_external',
+    #    'TCP', 'UDP', 'packet_flow']

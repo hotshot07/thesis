@@ -59,17 +59,14 @@ class Packet():
             self.packet_dict[kind + '_internal'] = 1
             return
         
-        if split_ip[0] == '10' and split_ip[1] == '0' and split_ip[2] == '0' and split_ip[3] == '10':
+        if split_ip[0] == '10':
             self.packet_dict[kind + '_internal'] = 1
             return
         
-        if split_ip[0] == '10' and split_ip[1] == '0':
+        if split_ip[0] == '192' and split_ip[1] == '168':
             self.packet_dict[kind + '_internal'] = 1
             return
         
-        if split_ip[0] == '10' and split_ip[1] == '244':
-            self.packet_dict[kind + '_internal'] = 1
-            return
         else:
             self.packet_dict[kind + '_external'] = 1
             return 
