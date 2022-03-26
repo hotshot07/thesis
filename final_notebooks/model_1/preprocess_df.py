@@ -1,5 +1,6 @@
 import pandas as pd 
 import numpy as np
+from sklearn.preprocessing import StandardScaler
 
 hex_lambda = lambda x: int(x,16)
 
@@ -97,24 +98,33 @@ def process_df(unprocessed_df):
     final_df['octet_3_ip_dst'] = octet_3_dst
     final_df['octet_4_ip_dst'] = octet_4_dst
     
-    return final_df 
+    list_of_cols_straight = ['length', 'eth.type', 'ip.version', 'ip.proto', 'ip.len', 'ip.ihl', 'ip.tos',
+       'ip.ttl' ,'load.count', 'FIN', 'SYN', 'RST', 'PSH', 'ACK',
+       'URG', 'ECE', 'CWR', 'UNK', 'source_docker_bridge', 'source_dns',
+       'source_service', 'source_pod', 'source_external',
+       'destination_docker_bridge', 'destination_dns', 'destination_service',
+       'destination_pod', 'destination_external', 'load_0', 'load_1', 'load_2',
+       'load_3', 'load_4', 'load_5', 'load_6', 'load_7', 'load_8', 'load_9',
+       'load_10', 'load_11', 'load_12', 'load_13', 'load_14', 'load_15',
+       'load_16', 'load_17', 'load_18', 'load_19',
+       'protocol.sport', 'protocol.dport']
 
+    for col in list_of_cols_straight:
+        final_df[str(col)] = list(unprocessed_df[str(col)])
+        
+    dummy_protocol = pd.get_dummies(unprocessed_df['protocol'])
+    final_df['TCP'] = list(dummy_protocol['TCP'])
+    final_df['UDP'] = list(dummy_protocol['UDP'])
+    
+    columns_not_to_scale = ['FIN', 'SYN', 'RST', 'PSH', 'ACK', 'URG', 'ECE', 'CWR', 'UNK',
+       'source_docker_bridge', 'source_dns', 'source_service', 'source_pod',
+       'source_external', 'destination_docker_bridge', 'destination_dns',
+       'destination_service', 'destination_pod', 'destination_external', 'TCP',
+       'UDP']
 
-def check_if_ip_is_internal_or_external(ip: str) -> str:
-    
-    split_ip = ip.split('.')
-    
-    if split_ip[0] == '172' and split_ip[1] == '17':
-        return 'docker_bridge'
-    
-    if split_ip[0] == '10' and split_ip[1] == '0' and split_ip[2] == '0' and split_ip[3] == '10':
-        return 'dns'
-    
-    if split_ip[0] == '10' and split_ip[1] == '0':
-        return 'service'
-    
-    if split_ip[0] == '10' and split_ip[1] == '244':
-        return 'pod'
-    
-    else:
-        return 'external'
+    for col in final_df.columns:
+        if col not in columns_not_to_scale:
+            scale = StandardScaler().fit(final_df[[col]])
+            final_df[col] = scale.transform(final_df[[col]])
+        
+    return final_df
