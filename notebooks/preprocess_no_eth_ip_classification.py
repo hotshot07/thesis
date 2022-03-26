@@ -1,7 +1,7 @@
 #with standard scalar
 import pandas as pd 
 import numpy as np
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.preprocessing import StandardScaler
 from datetime import datetime
 
 hex_lambda = lambda x: int(x,16)
