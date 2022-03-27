@@ -5,8 +5,8 @@ logging.basicConfig(level=logging.DEBUG)
 config = {
   'user': 'root',
   'password': 'password',
-  'host': 'localhost',
-  'port': '59332',
+  'host': 'mysql-service',
+  'port': '3306',
   'database': 'pcap',
   'allow_local_infile':True,
   'raise_on_warnings': True
