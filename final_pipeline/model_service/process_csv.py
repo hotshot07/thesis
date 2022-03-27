@@ -103,8 +103,6 @@ def process_df(unprocessed_df):
         if col not in columns_not_to_scale:
             scale = StandardScaler().fit(final_df[[col]])
             final_df[col] = scale.transform(final_df[[col]])
-        
-    print(final_df.columns)
     
     data_vector = final_df.values
     pred = loaded_model.predict(data_vector)

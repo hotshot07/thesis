@@ -4,6 +4,8 @@ from scapy.all import *
 import json 
 import os
 import csv 
+import logging 
+logging.basicConfig(level=logging.DEBUG)
 
 PCAP_CSV_PATH = './processed-files/'
 
@@ -96,6 +98,8 @@ def convert_pcap_to_csv(path):
         
         for data_row in pcap_dictionary:
             csv_writer.writerow(data_row.values())
+    
+    logging.debug(f"CSV file created: {csv_path}")
     
     return csv_path
 
