@@ -5,7 +5,7 @@ metadata:
   labels:
     app: pcap-csv 
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: pcap-csv  
@@ -22,7 +22,10 @@ spec:
         args: ["python3 pcap_server.py & python3 process_pcap.py"]
         ports:
         - containerPort: 5000
-
+        resources:
+          requests:
+            memory: "1024Mi"
+            cpu: "1"
 ---
 kind: Service
 apiVersion: v1

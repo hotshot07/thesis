@@ -10,8 +10,8 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 db_config = {
   'user': 'root',
   'password': 'password',
-  'host': 'localhost',
-  'port': '59332',
+  'host': '20.103.201.150',
+  'port': '3306',
   'database': 'pcap',
   'allow_local_infile':True,
   'raise_on_warnings': True
