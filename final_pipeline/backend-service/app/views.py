@@ -10,7 +10,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 db_config = {
   'user': 'root',
   'password': 'password',
-  'host': '20.103.201.150',
+  'host': '20.126.179.216',
   'port': '3306',
   'database': 'pcap',
   'allow_local_infile':True,
@@ -27,6 +27,8 @@ def index():
     SELECT utctimestamp, packet_length,ip_src, source_internal,source_external,ip_dst,destination_internal,destination_external,protocol,protocol_sport, protocol_dport, score
     FROM pcap_table
     where protocol = 'TCP'
+    and destination_external = 1
+    and score > 1
     order by score desc, packet_length desc
     limit 1000
     """
@@ -47,14 +49,18 @@ def interesting_ips():
     latest_query = """
     Select ip_dst, count(*) as count
     from pcap_table
-    where score > 0.5
+    where protocol_sport = 3306
+    and destination_external = 1
     group by ip_dst
     order by count desc
+#     Select ip_dst, count(*) as count
+# from pcap_table
+# where destination_external = 1
+# group by ip_dst
+# order by count desc
     """
     
     cursor.execute(latest_query)
     myresult = cursor.fetchall()
     
-    
     return jsonify(myresult)
-    # return render_template("index.html", table_data = myresult, analysed_packets = analysed_packets)
