@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Anomaly based NIDS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css">
+  </head>
+  <body>
+    <!--------------   HEADING ------------- -->
+    <section class="hero is-medium is-black">
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <h1 class="title is-size-1 is-mobile">Machine Learing based Intrusion Detection System</h1>
+                <h2 class="subtitle">by Mayank Arora</h2>
+                <h2 class="subtitle">Supervised by Dr. Stefan Weber</h2>
+            </div>
+        </div>
+    </section>
+    <!--------------   HEADING ------------- -->
+    <section class="hero is-small is-black">
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <div class="columns is-desktop">
+                    <div class="column">
+                        Analysed packets:{{analysed_packets}}
+                    </div>
+                    <div class="column">
+                        Model used:Autoencoder
+                    </div>
+                    <div class="column">
+                        Current baseline for model: 1.0
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </section>
+    <!--------------   Interesting IPs ------------- -->
+    <section class="hero is-large is-black">
+        <div class="hero-body has-text-centered">
+            <h1 class="title is-3"> Top 1000 anomalous packets </h1>
+            <div class='columns is-mobile is-centered'>
+                <div class='column is-12'>
+                    <table class="table is-bordered is-striped is-fullwidth is-hoverable">
+                        <thead>
+                            <tr>
+                                {% for item in table_data[0].keys() %}
+                                    <th>{{item}}</th>
+                                {% endfor %}
+                            <tr>
+                        </thead>
+                        <tbody>
+                            {% for row in table_data %}
+                                <tr>
+                                    {% for item in row.values() %}
+                                        <td>{{item}}</td>
+                                    {% endfor %}
+                                <tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+  </body>
+</html>

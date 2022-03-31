@@ -3,38 +3,34 @@ kind: Deployment
 metadata:
   name: pcap-service-deployment
   labels:
-    app: pcap-csv 
+    app: pcap-csv
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: pcap-csv  
+      app: pcap-csv
   template:
     metadata:
       labels:
-        app: pcap-csv  
+        app: pcap-csv
     spec:
       containers:
-      - name: pcap-csv 
-        image: hotshot07/pcap-service:latest
-        imagePullPolicy: Always
-        command: ["/bin/sh","-c"]
-        args: ["python3 pcap_server.py & python3 process_pcap.py"]
-        ports:
-        - containerPort: 5000
-        resources:
-          requests:
-            memory: "1024Mi"
-            cpu: "1"
+        - name: pcap-csv
+          image: hotshot07/pcap-service:latest
+          imagePullPolicy: Always
+          command: ["/bin/sh", "-c"]
+          args: ["python3 pcap_server.py & python3 process_pcap.py"]
+          ports:
+            - containerPort: 5000
 ---
 kind: Service
 apiVersion: v1
 metadata:
   name: pcap-internal-service
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
-    app: pcap-csv 
+    app: pcap-csv
   ports:
-  # Default port used by the image
-  - port: 5000
+    # Default port used by the image
+    - port: 5000
