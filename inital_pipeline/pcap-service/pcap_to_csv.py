@@ -90,5 +90,5 @@ def convert_pcap_to_csv(path):
     return csv_path
 
 
-# if __name__ == '__main__':
-#     convert_pcap_to_csv('/Users/hotshot07/Desktop/thesis/data/pcaps/wordpress1.pcap')
+if __name__ == '__main__':
+    convert_pcap_to_csv('/Users/hotshot07/Desktop/thesis/data/pcaps/wordpress1.pcap')

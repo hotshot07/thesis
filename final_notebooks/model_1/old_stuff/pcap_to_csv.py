@@ -10,14 +10,14 @@ class Packet():
     packet = None
     
     general_headers = ['length','timestamp']
-    #eth_headers = ['eth.src','eth.dst','eth.type']
+    eth_headers = ['eth.src','eth.dst','eth.type']
     ip_headers = ['ip.src', 'ip.dst', 'ip.version','ip.proto','ip.len', 'ip.ihl', 'ip.tos', 'ip.ttl']
     raw_headers = ['load.count']
     # flags not used in this model
-    #flags = ['FIN', 'SYN', 'RST', 'PSH', 'ACK', 'URG', 'ECE', 'CWR', 'UNK']
+    flags = ['FIN', 'SYN', 'RST', 'PSH', 'ACK', 'URG', 'ECE', 'CWR', 'UNK']
     source_ip_type = ['source_pod', 'source_external']
     destination_ip_type = ['destination_pod', 'destination_external']
-    #load_bytes = [f'load_{x}' for x in range(20)]
+    load_bytes = [f'load_{x}' for x in range(20)]
 
     list_of_headers = general_headers  + ip_headers + raw_headers  + source_ip_type + destination_ip_type
     
@@ -41,6 +41,8 @@ class Packet():
     def extract_data(self):
         self.packet_dict['timestamp'] = float(self.packet.time)
         self.packet_dict['length'] = len(self.packet)
+        
+        print("Here")
         
         for layer in self.packet.layers():
             packet_layer = self.packet[layer.__name__]
@@ -69,14 +71,21 @@ class Packet():
                 self.packet_dict['protocol.sport'] = packet_layer.fields.get('sport')
                 self.packet_dict['protocol.dport'] = packet_layer.fields.get('dport')
                 # basically one hot encoding flags here 
-                for flg in self.packet.sprintf('%TCP.flags%'):
-                    flag_type = self.flag_dict.get(str(flg))
-                    self.packet_dict[str(flag_type)] = 1
+                # for flg in self.packet.sprintf('%TCP.flags%'):
+                #     flag_type = self.flag_dict.get(str(flg))
+                #     self.packet_dict[str(flag_type)] = 1
                 
                 
             if layer_name == 'Raw':
                 self.packet_dict['load.count'] = len(packet_layer.fields.get('load'))
                 current_load = str(packet_layer.fields.get('load')[:10].hex())
+                
+                print(packet_layer.fields.get('load'))
+                
+                print(current_load)
+                print(self.packet_dict['load.count'])
+                
+                
                 
                 if current_load != str(0):
                     for i, ch in enumerate(current_load):
@@ -123,25 +132,27 @@ def convert_pcap_to_csv(path):
     
     pcap_dictionary = []
 
+    print(pcap)
+    
     for packet_var in pcap:
         processed_packet = Packet(packet_var).return_dict()
-        if processed_packet.get('protocol') is not None:
-            pcap_dictionary.append(processed_packet)
-    
+        # if processed_packet.get('protocol') is not None:
+        #     pcap_dictionary.append(processed_packet)
+        break 
         
-    head, tail = os.path.split(path)
+    # head, tail = os.path.split(path)
     
-    csv_path = f"{tail.split('.')[0]}.csv"
+    # csv_path = f"{tail.split('.')[0]}.csv"
 
-    with open(csv_path, 'w', newline='') as csv_data_file:
-        csv_writer = csv.writer(csv_data_file)
-        csv_writer.writerow(pcap_dictionary[0].keys())
+    # with open(csv_path, 'w', newline='') as csv_data_file:
+    #     csv_writer = csv.writer(csv_data_file)
+    #     csv_writer.writerow(pcap_dictionary[0].keys())
         
-        for data_row in pcap_dictionary:
-            csv_writer.writerow(data_row.values())
+    #     for data_row in pcap_dictionary:
+    #         csv_writer.writerow(data_row.values())
     
-    return csv_path
+    # return csv_path
 
 
 if __name__ == '__main__':
-    convert_pcap_to_csv('attack1.pcap')
+    convert_pcap_to_csv('wordpress1.pcap')

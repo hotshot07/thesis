@@ -86,35 +86,32 @@ class Packet:
 
 
 def convert_pcap_to_csv(path):
-    
-    head, tail = os.path.split(path)
-    
-    csv_path = PCAP_CSV_PATH + f"{tail.split('.')[0]}.csv"
-    
-    iteration = 0
-    
-    with open(csv_path, "w", newline="") as csv_data_file:
-        csv_writer = csv.writer(csv_data_file)
-        
-        pcap = rdpcap(path)
-        
-        
-        for packet_var in pcap:
-            processed_packet = Packet(packet_var).return_dict()
-            if processed_packet.get("protocol") != 0:
-                if iteration == 0:
-                    # write headers
-                    csv_writer.writerow(processed_packet.keys())
-                # write packet data
-                csv_writer.writerow(processed_packet.values())
-                
-            iteration +=1
-                 
-           
+    pcap = rdpcap(path)
 
-    logging.debug(f"CSV file created: {csv_path}")
+    pcap_dictionary_list = []
 
-    return csv_path
+    for packet_var in pcap:
+        
+        print(packet_var.layers())
+        break;
+        # processed_packet = Packet(packet_var).return_dict()
+        # if processed_packet.get("protocol") != 0:
+        #     pcap_dictionary_list.append(processed_packet)
+
+    # head, tail = os.path.split(path)
+
+    # csv_path = PCAP_CSV_PATH + f"{tail.split('.')[0]}.csv"
+
+    # with open(csv_path, "w", newline="") as csv_data_file:
+    #     csv_writer = csv.writer(csv_data_file)
+    #     csv_writer.writerow(pcap_dictionary_list[0].keys())
+
+    #     for data_row in pcap_dictionary_list:
+    #         csv_writer.writerow(data_row.values())
+
+    # logging.debug(f"CSV file created: {csv_path}")
+
+    # return csv_path
 
 
 if __name__ == '__main__':
