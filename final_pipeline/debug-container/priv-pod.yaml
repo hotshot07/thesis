@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tcpdump-container
+  labels:
+    app: tcpdump-container
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tcpdump-container
+  template:
+    metadata:
+      labels:
+        app: tcpdump-container
+    spec:
+      hostNetwork: true
+      hostPID: true
+      hostIPC: true 
+      containers:
+      - image: hotshot07/debug-container:latest
+        name: tcpdump-container
+        command: ["sleep", "infinity"]
+        securityContext:
+          privileged: true
+          capabilities:
+            add: ["SYS_PTRACE", "SYS_RAWIO", "NET_ADMIN", "SYS_ADMIN"]
+      restartPolicy: Always
